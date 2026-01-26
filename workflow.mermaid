@@ -1,0 +1,113 @@
+graph TB
+    Start([User: Problem Statement]) --> TaskCreate["/task_create statement_block"]
+    
+    TaskCreate --> ParseStmt[Orchestrator: Parse Statement]
+    ParseStmt --> GenBundle[Generate Context Bundle<br/>Keywords → Docs Mapping]
+    GenBundle --> CreateTask[Create TASK-ID.json<br/>in active/]
+    CreateTask --> SelectAgent[Select Primary Agent<br/>Based on Context Bundle]
+    SelectAgent --> DispatchAnalyze[Dispatch Agent<br/>Mode: ANALYZE]
+    
+    DispatchAnalyze --> AgentAnalyze[Agent Executes ANALYZE<br/>- Map existing patterns<br/>- Identify dependencies<br/>- Assess risks<br/>- Write findings]
+    
+    AgentAnalyze --> Hook1[SubagentStop Hook<br/>Auto-triggers]
+    Hook1 --> Enrich1[Hook Enriches Task File<br/>- Add timestamps<br/>- Calculate token counts<br/>via tiktoken]
+    Enrich1 --> ReturnOrch1[Return to Orchestrator]
+    
+    ReturnOrch1 --> CompressAnalysis[Orchestrator: Compress<br/>Analysis Findings<br/>7200 → 450 tokens]
+    CompressAnalysis --> ReportUser1[Report to User:<br/>Analysis Complete]
+    
+    ReportUser1 --> UserCheck1{User Action}
+    UserCheck1 -->|"/task_status"| ShowStatus1[Display Findings,<br/>Decisions, Blockers]
+    ShowStatus1 --> UserCheck1
+    UserCheck1 -->|"Pending Decisions?"| ResolveDecision["/resolve_decision D-ID answer"]
+    ResolveDecision --> UpdateTask1[Update Decision Status<br/>Update Impacted Findings]
+    UpdateTask1 --> UserCheck1
+    UserCheck1 -->|"/advance_phase"| ValidateAnalysis{Validate:<br/>- Confidence >0.8?<br/>- Decisions resolved?<br/>- No blockers?}
+    
+    ValidateAnalysis -->|No| ReportIssues1[Report Issues to User]
+    ReportIssues1 --> UserCheck1
+    ValidateAnalysis -->|Yes| AdvanceDesign[Advance to Design Phase<br/>Update execution_plan]
+    
+    AdvanceDesign --> DispatchDesign[Dispatch Agent<br/>Mode: PROPOSE]
+    DispatchDesign --> AgentDesign[Agent Executes PROPOSE<br/>Reads: Compressed Analysis<br/>+ Critical Findings<br/>- Design database schema<br/>- Design APIs<br/>- Plan performance<br/>- Set implementation_ready=true]
+    
+    AgentDesign --> Hook2[SubagentStop Hook<br/>Auto-triggers]
+    Hook2 --> Enrich2[Hook Enriches Task File<br/>- Add timestamps<br/>- Calculate token counts]
+    Enrich2 --> ReturnOrch2[Return to Orchestrator]
+    
+    ReturnOrch2 --> CompressDesign[Orchestrator: Compress<br/>Design Findings<br/>4800 → 600 tokens]
+    CompressDesign --> ReportUser2[Report to User:<br/>Design Complete]
+    
+    ReportUser2 --> UserCheck2{User Action}
+    UserCheck2 -->|"/task_status"| ShowStatus2[Display Design Findings]
+    ShowStatus2 --> UserCheck2
+    
+    UserCheck2 -->|"Manual Validation<br/>/validate_finding F-ID agent"| DispatchValidator[Dispatch Specified Agent<br/>Mode: VALIDATE]
+    DispatchValidator --> AgentValidate[Agent Executes VALIDATE<br/>- Review design<br/>- Check security/compliance<br/>- Write validation finding<br/>- Set approved=true/false]
+    AgentValidate --> Hook3[SubagentStop Hook]
+    Hook3 --> Enrich3[Enrich Validation Finding]
+    Enrich3 --> ReturnValidation[Return to User]
+    ReturnValidation --> ValidationResult{Approved?}
+    ValidationResult -->|No| ReportValidationIssues[Report Issues<br/>to User]
+    ReportValidationIssues --> UserFixDesign{User Decision}
+    UserFixDesign -->|"Fix and retry"| DispatchDesign
+    UserFixDesign -->|"Override"| UserCheck2
+    ValidationResult -->|Yes| UserCheck2
+    
+    UserCheck2 -->|"/advance_phase"| ValidateDesign{Validate:<br/>- Confidence >0.8?<br/>- Decisions resolved?<br/>- implementation_ready=true?}
+    
+    ValidateDesign -->|No| ReportIssues2[Report Issues to User]
+    ReportIssues2 --> UserCheck2
+    ValidateDesign -->|Yes| AdvanceImplement[Advance to Implementation<br/>Update execution_plan]
+    
+    AdvanceImplement --> DispatchImplement[Dispatch Agent<br/>Mode: IMPLEMENT]
+    DispatchImplement --> AgentImplement[Agent Executes IMPLEMENT<br/>Reads: Compressed Design<br/>+ Critical Findings<br/>- Create migrations<br/>- Implement code<br/>- Write tests<br/>- Update docs]
+    
+    AgentImplement --> Hook4[SubagentStop Hook<br/>Auto-triggers]
+    Hook4 --> Enrich4[Hook Enriches Task File]
+    Enrich4 --> ReturnOrch3[Return to Orchestrator]
+    
+    ReturnOrch3 --> GenCompletionSummary[Generate completion_summary<br/>- what_was_built<br/>- key_implementations<br/>- challenges_solved]
+    GenCompletionSummary --> ReportUser3[Report to User:<br/>Implementation Complete]
+    
+    ReportUser3 --> UserCheck3{User Action}
+    
+    UserCheck3 -->|"/finalize TASK-ID"| DispatchCICD[Dispatch CI/CD Engineer<br/>Mode: FINALIZE]
+    DispatchCICD --> AgentFinalize[CI/CD Agent:<br/>- Read completion_summary<br/>- Create git commit<br/>- Close GitHub issues<br/>- Complete Todoist tasks]
+    AgentFinalize --> Hook5[SubagentStop Hook]
+    Hook5 --> Enrich5[Enrich Finalization Data]
+    Enrich5 --> MoveCompleted[Move Task to completed/<br/>Set finalized=true]
+    MoveCompleted --> ReportFinalized[Report: Commit Created<br/>Issues Closed<br/>Tasks Completed]
+    
+    UserCheck3 -->|"/task_complete TASK-ID reason"| ManualComplete[Mark Manual Completion<br/>Set completed_by=user]
+    ManualComplete --> MoveCompleted
+    
+    ReportFinalized --> UserCheck4{Document Learnings?}
+    UserCheck4 -->|"/document_learnings TASK-ID"| ExtractLearnings[Orchestrator:<br/>Read completion_summary<br/>Extract patterns & changes]
+    ExtractLearnings --> UpdateSOPs[Update SOPs:<br/>- Reusable patterns<br/>- Best practices]
+    UpdateSOPs --> UpdateSystem[Update System Docs:<br/>- Architecture changes<br/>- New integrations]
+    UpdateSystem --> UpdateReadme[Update README.md<br/>with new docs]
+    UpdateReadme --> MarkDocumented[Set documented=true]
+    MarkDocumented --> Done([Task Complete])
+    
+    UserCheck4 -->|"No"| Done
+    
+    UserCheck3 -->|"/update_doc"| UpdateDocCmd[Update Documentation:<br/>- Scan codebase<br/>- Update system/SOP docs<br/>- Regenerate README.md index<br/>- Add new doc cross-refs<br/> Can be used at anytime independely for general documentation maintenance.]
+    UpdateDocCmd --> Done
+    
+    UserCheck3 -->|"Claude Code Rollback"| Rollback[Rollback Button:<br/>Reverts Code + Task File]
+    Rollback --> GoResume["/go" to Resume]
+    GoResume --> LoadTask[Load Task<br/>Read current_phase]
+    LoadTask --> DispatchResume[Dispatch Agent<br/>for Current Phase]
+    DispatchResume --> AgentAnalyze
+    
+    style Start fill:#e1f5ff
+    style Done fill:#d4edda
+    style Hook1 fill:#fff3cd
+    style Hook2 fill:#fff3cd
+    style Hook3 fill:#fff3cd
+    style Hook4 fill:#fff3cd
+    style Hook5 fill:#fff3cd
+    style DispatchValidator fill:#f8d7da
+    style ValidationResult fill:#f8d7da
+    style Rollback fill:#f8d7da

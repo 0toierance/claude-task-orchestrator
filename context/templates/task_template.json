@@ -1,0 +1,95 @@
+{
+  "_NEEDS_INITIALIZATION": true,
+  "_INSTRUCTIONS": {
+    "_READ_FIRST": "This template is for the ORCHESTRATOR to create task files.",
+    "_orchestrator_responsibilities": [
+      "1. Generate unique task_id (format: TASK-YYYYMMDD-###)",
+      "2. Extract title from user statement (concise, 3-10 words)",
+      "3. Copy full user statement to statement_block",
+      "4. Extract acceptance_criteria from statement (as array)",
+      "5. Select context_bundle based on keywords (from context-bundles.json)",
+      "6. Set status='active' and current_phase='analysis'",
+      "7. Initialize empty arrays: findings=[], decisions=[], blockers=[]",
+      "8. DELETE _INSTRUCTIONS section",
+      "9. KEEP _NEEDS_INITIALIZATION marker (hook will remove it)"
+    ],
+    "_marker_explanation": [
+      "_NEEDS_INITIALIZATION is a marker for PostToolUse hook",
+      "Hook sees this marker and knows to add timestamps",
+      "Hook removes marker after initialization",
+      "This ensures hook ONLY runs on new task creation"
+    ]
+  },
+  
+  "task_id": "TASK-YYYYMMDD-###",
+  "created_at": "ISO-8601-TIMESTAMP",
+  "updated_at": "ISO-8601-TIMESTAMP",
+  "status": "active",
+  "current_phase": "analysis",
+  
+  "definition": {
+    "title": "[Extract concise title from statement]",
+    "statement_block": "[Full user problem statement - copy verbatim]",
+    "acceptance_criteria": [
+      "[Extract criterion 1]",
+      "[Extract criterion 2]"
+    ]
+  },
+  
+  "context_bundle": {
+    "type": "[Select from context-bundles.json based on keywords]",
+    "sops": ["[auto-populated from bundle]"],
+    "system": ["[auto-populated from bundle]"],
+    "code_refs": ["[auto-populated from bundle]"],
+    "keywords": ["[extracted from statement]"],
+    "total_tokens": 0
+  },
+  
+  "knowledge_pool": {
+    "findings": [],
+    "phase_compressions": {},
+    "decisions": [],
+    "blockers": []
+  },
+  
+  "execution_plan": {
+    "phases": [
+      {
+        "name": "analysis",
+        "status": "in_progress",
+        "agents_active": [],
+        "agents_completed": [],
+        "output_tokens": 0,
+        "compressed": false
+      },
+      {
+        "name": "design",
+        "status": "not_started",
+        "agents_active": [],
+        "agents_completed": [],
+        "output_tokens": 0,
+        "compressed": false
+      },
+      {
+        "name": "implementation",
+        "status": "not_started",
+        "agents_active": [],
+        "agents_completed": [],
+        "output_tokens": 0,
+        "compressed": false
+      }
+    ],
+    "validation_requested": false
+  },
+  
+  "implementation_artifacts": [],
+  
+  "completion_summary": {},
+  
+  "metadata": {
+    "priority": "medium",
+    "estimated_hours": "",
+    "business_value": "",
+    "user_impact": ""
+  }
+}

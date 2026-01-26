@@ -1,0 +1,45 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".claude/hooks/hook_validate_task.py"
+          }
+        ]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".claude/hooks/hook_enrich_findings.py"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".claude/hooks/hook_init_task.py"
+          },
+          {
+            "type": "command",
+            "command": ".claude/hooks/hook_compress_phase.py"
+          }
+        ]
+      }
+    ]
+  },
+  "project": {
+    "type": "generic",
+    "name": "My Project",
+    "description": "Configure this for your project"
+  }
+}

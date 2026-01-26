@@ -1,0 +1,127 @@
+{
+    "database_operations": {
+      "description": "Database schema design, migrations, query optimization",
+      "sops": [
+        "database-optimization.md",
+        "security-protocols.md"
+      ],
+      "system": [
+        "supabase-schema-summary.md",
+        "architecture.md"
+      ],
+      "code_refs": [
+        "/src/db/**/*.sql",
+        "/src/db/**/*.ts",
+        "/supabase/migrations/**"
+      ]
+    },
+    
+    "api_design": {
+      "description": "REST/GraphQL endpoints, API contracts, rate limiting",
+      "sops": [
+        "api-design-standards.md",
+        "security-protocols.md"
+      ],
+      "system": [
+        "api-contracts.json",
+        "architecture.md"
+      ],
+      "code_refs": [
+        "/src/api/**/*.ts",
+        "/src/routes/**/*.ts"
+      ]
+    },
+    
+    "payment_processing": {
+      "description": "Stripe integration, transactions, PCI compliance",
+      "sops": [
+        "security-protocols.md",
+        "deployment-checklist.md"
+      ],
+      "system": [
+        "stripe-integration.md",
+        "architecture.md"
+      ],
+      "code_refs": [
+        "/src/payments/**/*.ts",
+        "/src/transactions/processing.ts"
+      ]
+    },
+    
+    "real_time": {
+      "description": "WebSockets, Supabase subscriptions, live updates",
+      "sops": [
+        "database-optimization.md"
+      ],
+      "system": [
+        "architecture.md",
+        "supabase-schema.sql"
+      ],
+      "code_refs": [
+        "/src/realtime/**/*.ts",
+        "/src/subscriptions/**/*.ts"
+      ]
+    },
+    
+    "security_protocols": {
+      "description": "Auth, RLS, encryption, audit trails",
+      "sops": [
+        "security-protocols.md",
+        "deployment-checklist.md"
+      ],
+      "system": [
+        "architecture.md",
+        "supabase-schema.sql"
+      ],
+      "code_refs": [
+        "/src/auth/**/*.ts",
+        "/supabase/policies/**/*.sql"
+      ]
+    },
+    
+    "ui_components": {
+      "description": "React Native components, styling, animations",
+      "sops": [
+        "ui-design-standards.md"
+      ],
+      "system": [
+        "component-library.md",
+        "theme-system.md"
+      ],
+      "code_refs": [
+        "/src/components/**/*.tsx",
+        "/src/screens/**/*.tsx"
+      ]
+    },
+    
+    "cicd_deployment": {
+      "description": "Build pipelines, deployments, monitoring",
+      "sops": [
+        "deployment-checklist.md"
+      ],
+      "system": [
+        "architecture.md",
+        "dependencies.md"
+      ],
+      "code_refs": [
+        "/.github/workflows/**",
+        "/eas.json"
+      ]
+    },
+    
+    "external_integration": {
+      "description": "External API integration, session auth, data sync",
+      "sops": [
+        "api-integration.md",
+        "security-protocols.md"
+      ],
+      "system": [
+        "external-api-integration.md",
+        "architecture.md"
+      ],
+      "code_refs": [
+        "/src/integrations/**/*.ts",
+        "/src/external/**/*.ts"
+      ]
+    }
+  }
